@@ -59,7 +59,9 @@ button:hover {
     display: grid;
     grid-template-rows: 100% 1fr 1fr 1fr 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 10px 10px;
+    gap: 16px 16px;
+
+    width: 348px;
 }
 
 #zero {
