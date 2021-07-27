@@ -1,9 +1,10 @@
 function add(a, b) {
-    return a + b;
+    return (parseFloat(a) + parseFloat(b)).toString();
 }
 
 function sub(a, b) {
-    return a - b;
+    return (parseFloat(a) - parseFloat(b)).toString();
+
 }
 
 function mul(a, b) {
@@ -37,34 +38,125 @@ function roundNumber(num, dec) {
 
 const nums = document.querySelectorAll('.number');
 const secOps = document.querySelectorAll('.secondary-operator');
-const priOps = document.querySelectorAll('.main-operators');
+const priOps = document.querySelectorAll('.main-operator');
 const display = document.querySelector('#display');
 let op1 = "";
 let op2 = "";
-let opSel = false;
+let opSel = 0;
 let decUsed = false;
 let length = 0;
-
 function operate(str) {
-    if (str === "") {
+
+    if (str === "" || str === '-') {
         display.textContent = "0";
         return;
     }
     str = roundNumber(str, 6);
-    op1 = roundNumber(op1, 6);
-    op2 = roundNumber(op2, 6);
     str = str.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
     display.textContent = str;
 }
 
+function calc() {
+
+    if (opSel === 1) {
+        op1 = div(op1, op2);
+    }
+    else if (opSel === 2) {
+        op1 = mul(op1, op2);
+
+    }
+    else if (opSel === 3) {
+        op1 = add(op1, op2);
+    }
+    else if (opSel === 4) {
+        op1 = sub(op1, op2);
+    }
+    opSel = 0;
+    op2 = "";
+    operate(op1);
+}
+
+priOps.forEach((op) => {
+    op.addEventListener('click', () => {
+
+        length = 0;
+        decUsed = false;
+        operate(op1);
+        if (op.textContent === '÷') {
+
+            if (opSel === 0) {
+                opSel = 1;
+                operate(op2);
+            }
+            else if (op2 !== "") {
+                opSel = 1;
+                calc();
+                operate(op1);
+            }
+            opSel = 1;
+
+
+        }
+        else if (op.textContent === 'x') {
+
+            console.log(opSel, op1, op2)
+            if (opSel === 0) {
+                opSel = 2;
+                operate(op2);
+            }
+            else if (op2 !== "") {
+                opSel = 2;
+                calc();
+                operate(op1);
+            }
+            opSel = 2;
+
+        }
+        else if (op.textContent === '+') {
+            if (opSel === 0) {
+                opSel = 3;
+                operate(op2);
+            }
+            else if (op2 !== "") {
+                opSel = 3;
+                calc();
+                operate(op1);
+            }
+            opSel = 3;
+
+
+        }
+        else if (op.textContent === '-') {
+            if (opSel === 0) {
+                opSel = 4;
+                operate(op2);
+
+            }
+            else if (op2 !== "") {
+                opSel = 4;
+                calc();
+                operate(op1);
+            }
+            opSel = 4;
+
+
+        }
+
+        else if (op.textContent === '=') {
+            calc();
+        }
+    })
+})
+
 secOps.forEach((op) => {
     op.addEventListener('click', () => {
-        console.log(op.textContent);
         if (op.textContent === 'C') {
-            opSel ? op2 = "" : op1 = "";
+            op2 = "";
+            op1 = "";
             operate("");
             decUsed = false;
             length = 0;
+            opSel = 0;
 
         }
         else if (op.textContent === "+/-") {
